@@ -11,7 +11,7 @@ class Player
       puts "#{@name} Enter you choice"
       a = gets.chomp
       if !["1","2","3","4","5","6","7","8","9"].include?a
-        puts "Enter single digit numbers only"
+        puts "Enter single digit numbers only from 1 to 9"
         redo # repeats the loop until players choice is a number.
       end
     end
@@ -55,6 +55,16 @@ class Board
     end
   end
 
+  def ungroup_board(board)
+    array = Array.new
+    board.each do |num|
+      num.each_with_index do |value|
+        array << value
+      end
+    end
+    return array
+  end
+
 end
 
 def decide_winner(player_board, player)
@@ -92,20 +102,29 @@ def check_choice_existence(already_selected_choices, player)
   return choice_to_be_checked
 end
 
+def isDraw?(selected)
+  if selected.length == 9
+    puts "NO MORE EMPTY SPACES AVAILABLE, CONSIDER IT A DRAW. PLEASE RESTART THE GAME"
+    return true
+  end 
+end
+
 
 def gameRound(player1, player2)
   already_selected_choices = []
   board1 = Board.new([[1,2,3],[4,5,6],[7,8,9]])
-  for num in 1..4
-    board1.p_board
+  board1.p_board
+  loop do     
     chosen = check_choice_existence(already_selected_choices, player1)
     already_selected_choices << chosen #stores selected choice
     one = player1.chnage_board(board1.content, chosen)
     if decide_winner(one, player1) == true
+        board1.p_board
        puts "CONGRATULATIONS!!! #{player1.name}, You win!!!"
        break
     end
     board1.p_board
+    break if isDraw?(already_selected_choices) 
     chosen = check_choice_existence(already_selected_choices, player2)
     already_selected_choices << chosen
     two = player2.chnage_board(board1.content,chosen)
