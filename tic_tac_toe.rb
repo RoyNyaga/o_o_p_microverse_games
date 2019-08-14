@@ -17,8 +17,8 @@ class Player
     end
     return a
   end
-# returns a board containig the new choice made by the player
-  def chnage_board(board,one)
+# returns a board containing the new choice made by the player
+  def add_players_identy_to_board(board,one)
     board.each do |num|
       num.each_with_index do |value, index|
         if "#{value}" == one
@@ -28,17 +28,6 @@ class Player
     end
     return board
   end
-# spreads out the board content in a single array for better comparism
-  def ungroup_board(board)
-    array = Array.new
-    board.each do |num|
-      num.each_with_index do |value|
-        array << value
-      end
-    end
-    return array
-  end
-
 end
 
 class Board
@@ -48,12 +37,15 @@ class Board
   def initialize(content)
     @content = content
   end
+
 # displays baord content
-  def p_board
+  def display_board
     @content.each do |subarray|
     puts subarray.join(" | "), "̣---------"
     end
   end
+
+# spreads out the board
 
   def ungroup_board(board)
     array = Array.new
@@ -67,10 +59,10 @@ class Board
 
 end
 
-def decide_winner(player_board, player)
+def decide_winner(player_board, board1)
 
   conditions_winning_1 = [ ["x", "x", "x"], ["o","o","o"] ]
-  sample = player.ungroup_board(player_board)
+  sample = board1.ungroup_board(player_board)
 # since "include" method could not compute "include?.[ sample[0], sample[3], sample[6] ]" i had to pass
 # the former to the variables sample4,5,6, etc
   sample4 = [ sample[0], sample[3], sample[6] ]
@@ -113,23 +105,23 @@ end
 def gameRound(player1, player2)
   already_selected_choices = []
   board1 = Board.new([[1,2,3],[4,5,6],[7,8,9]])
-  board1.p_board
+  board1.display_board
   loop do     
     chosen = check_choice_existence(already_selected_choices, player1)
     already_selected_choices << chosen #stores selected choice
-    one = player1.chnage_board(board1.content, chosen)
-    if decide_winner(one, player1) == true
-        board1.p_board
+    one = player1.add_players_identy_to_board(board1.content, chosen)
+    if decide_winner(one, board1) == true
+        board1.display_board
        puts "CONGRATULATIONS!!! #{player1.name}, You win!!!"
        break
     end
-    board1.p_board
+    board1.display_board
     break if isDraw?(already_selected_choices) 
     chosen = check_choice_existence(already_selected_choices, player2)
     already_selected_choices << chosen
-    two = player2.chnage_board(board1.content,chosen)
-    board1.p_board
-    if decide_winner(two, player2) == true
+    two = player2.add_players_identy_to_board(board1.content,chosen)
+    board1.display_board
+    if decide_winner(two, board1) == true
        puts "CONGRATULATIONS!!! #{player2.name}, You win!!!"
        break
     end
